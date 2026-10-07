@@ -13,7 +13,7 @@ Copy this file to `TEAM.md` in your team repository and complete it before start
 | Full name | GitHub username |
 |---|---|
 | PAGET Maël | Mael824 |
-| Student 2 | @github-user-2 |
+| GUNEYSU Ayse| Ayse3993 |
 | Student 3 | @github-user-3 |
 
 Add a fourth row only if your team has four members.
