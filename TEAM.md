@@ -14,7 +14,7 @@ Copy this file to `TEAM.md` in your team repository and complete it before start
 |---|---|
 | PAGET Maël | Mael824 |
 | GUNEYSU Ayse| Ayse3993 |
-| Student 3 | @github-user-3 |
+| SY Adja | adja07 |
 
 Add a fourth row only if your team has four members.
 
