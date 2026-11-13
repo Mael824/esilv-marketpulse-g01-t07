@@ -475,3 +475,4 @@ This README intentionally does not display CI, security, release or license badg
 **Course:** MESIFI472326 - Python, Git, Linux  
 **School:** ESILV - A4  
 **Use case:** MarketPulse - Multi-Source Financial Market Data Dashboard
+<!-- TD03 Modification -->
