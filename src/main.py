@@ -10,6 +10,7 @@ DATA_DIR = Path("data/sample")
 # Parsing YAML is optional and is not required by the 18-hour lab sequence.
 LOOKBACK_LABEL = "1 month"
 INTERVAL_LABEL = "Daily"
+DATA_SOURCE_LABEL="prices.csv"
 
 
 def load_instruments():
@@ -40,6 +41,7 @@ def main():
     benchmark_latest = benchmark_prices[-1]
 
     print("=== MarketPulse ===")
+    print(f"Data source: {DATA_SOURCE_LABEL}")
     print()
     print("Instrument")
     print(f"{instrument['ticker']} - {instrument['name']}")
