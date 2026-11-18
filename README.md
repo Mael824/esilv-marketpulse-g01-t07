@@ -229,7 +229,36 @@ The complete dependency model, including standard-library modules, transitive de
 [MarketPulse libraries and dependencies](docs/13_MARKETPULSE_LIBRARIES_AND_DEPENDENCIES.md)
 
 Do not add packages that are not actually required by the implementation.
+### Run the current starter version (TD01-TD05)
 
+To run the current MarketPulse version, open a terminal at the repository root.
+
+**1. Check your Python version**
+
+```bash
+python --version
+```
+
+**2. Run the application**
+
+```bash
+python src/main.py
+```
+
+At this stage, the application uses only the Python standard library. No additional package installation is required.
+
+**3. Check the execution output**
+
+A successful execution displays:
+
+- the selected instrument (AAPL);
+- its benchmark (SP500);
+- the selected period and interval;
+- the number of observations for each series.
+
+The current sample execution displays 21 observations for both AAPL and SP500.
+
+**Note:** Later labs may introduce additional dependencies. Check `requirements.txt` and the installation instructions above when working with a later version of the project.
 ## Bloomberg teaching modes
 
 The Bloomberg stage supports two authorized classroom modes:
