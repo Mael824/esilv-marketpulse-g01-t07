@@ -5,6 +5,7 @@ from analytics import (
     calculate_period_return,
     calculate_relative_performance,
 )
+from providers.yahoo_provider import fetch_yahoo_prices
 import csv
 import json
 
@@ -17,6 +18,10 @@ DATA_DIR = Path("data/sample")
 LOOKBACK_LABEL = "1 month"
 INTERVAL_LABEL = "Daily"
 DATA_SOURCE_LABEL="prices.csv"
+YAHOO_SYMBOLS = {
+    "AAPL": "AAPL",
+    "SP500": "^GSPC",
+}
 
 def normalize_price_row(row):
     return {
@@ -51,9 +56,19 @@ def main():
 
     instrument = instruments["instrument"]
     benchmark = instruments["benchmark"]
+    instrument_prices = fetch_yahoo_prices(
+        symbol=YAHOO_SYMBOLS["AAPL"],
+        canonical_ticker="AAPL",
+        period="1mo",
+        interval="1d",
+    )
 
-    instrument_prices = filter_prices(normalized_prices, instrument["ticker"])
-    benchmark_prices = filter_prices(normalized_prices, benchmark["ticker"])
+    benchmark_prices = fetch_yahoo_prices(
+        symbol=YAHOO_SYMBOLS["SP500"],
+        canonical_ticker="SP500",
+        period="1mo",
+        interval="1d",
+    )
     aligned_instrument, aligned_benchmark = align_series(
     instrument_prices,
     benchmark_prices,
@@ -76,27 +91,21 @@ def main():
     instrument_latest = instrument_prices[-1]
     benchmark_latest = benchmark_prices[-1]
 
-    print("=== MarketPulse ===")
+    print("Provider")
+    print("Yahoo Finance via yfinance")
+    print()
     print(f"Market configuration")
+    print(f"Instrument: {instrument['ticker']} - {instrument['name']}")
+    print(f"Benchmark: {benchmark['ticker']} - {benchmark['name']}")
     print(f"Period: {LOOKBACK_LABEL}")
     print(f"Interval: {INTERVAL_LABEL}")
     print()
-    print("Instrument")
-    print(f"{instrument['ticker']} - {instrument['name']}")
-    print(f"Period return : {instrument_return:.2f}%")
-    
-    print()
-    print("Benchmark")
-    print(f"{benchmark['ticker']} - {benchmark['name']}")
-    print(f"Period return : {benchmark_return:.2f}%")
+
+    print(f"Instrument return : {instrument_return:.2f}%")
+    print(f"Benchmark return : {benchmark_return:.2f}%")
     print()
     print("Relative performance")
     print(f"{instrument['ticker']} vs {benchmark['ticker']} : {relative_performance:+.2f} percentage points")
-    print()
-
-    print("Base 100")
-    print(f"{instrument['ticker']}  : {instrument_base_100[0]['value']:.2f} -> {instrument_base_100[-1]['value']:.2f}")
-    print(f"{benchmark['ticker']} : {benchmark_base_100[0]['value']:.2f} -> {benchmark_base_100[-1]['value']:.2f}")
 
 if __name__ == "__main__":
     main()
