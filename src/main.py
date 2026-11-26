@@ -1,4 +1,10 @@
 from pathlib import Path
+from analytics import (
+    align_series,
+    calculate_base_100,
+    calculate_period_return,
+    calculate_relative_performance,
+)
 import csv
 import json
 from analytics import (
@@ -17,7 +23,16 @@ LOOKBACK_LABEL = "1 month"
 INTERVAL_LABEL = "Daily"
 DATA_SOURCE_LABEL="prices.csv"
 
-
+def normalize_price_row(row):
+    return {
+        "date": row["date"],
+        "ticker": row["ticker"],
+        "open": float(row["open"]),
+        "high": float(row["high"]),
+        "low": float(row["low"]),
+        "close": float(row["close"]),
+        "volume": int(row["volume"]),
+    }
 def load_instruments():
     with open(DATA_DIR / "instruments.json", encoding="utf-8") as file:
         return json.load(file)
@@ -47,6 +62,9 @@ def normalize_price_row(row):
 def main():
     instruments = load_instruments()
     prices = load_prices()
+    normalized_prices = [
+    normalize_price_row(row)
+    for row in prices]
 
     normalized_prices = [
         normalize_price_row(row)
@@ -94,7 +112,9 @@ def main():
     benchmark_latest = aligned_benchmark[-1]
 
     print("=== MarketPulse ===")
-    print(f"Data source: {DATA_SOURCE_LABEL}")
+    print(f"Market configuration")
+    print(f"Period: {LOOKBACK_LABEL}")
+    print(f"Interval: {INTERVAL_LABEL}")
     print()
 
     print("Market configuration")
@@ -130,6 +150,9 @@ def main():
     print(f"{benchmark['ticker']} : {benchmark_base_100[0]['value']:.2f} -> {benchmark_base_100[-1]['value']:.2f}")
 
 
+    print("Base 100")
+    print(f"{instrument['ticker']}  : {instrument_base_100[0]['value']:.2f} -> {instrument_base_100[-1]['value']:.2f}")
+    print(f"{benchmark['ticker']} : {benchmark_base_100[0]['value']:.2f} -> {benchmark_base_100[-1]['value']:.2f}")
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,6 @@
+from pathlib import Path
+import csv
+import json
 def index_by_date(prices):
     return {
         row["date"]: row
