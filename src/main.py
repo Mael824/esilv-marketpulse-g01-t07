@@ -28,8 +28,19 @@ def load_instruments():
 def main():
     instruments = load_instruments()
 
+    normalized_prices = [
+        normalize_price_row(row)
+        for row in prices
+    ]
+
     instrument = instruments["instrument"]
     benchmark = instruments["benchmark"]
+    instrument_prices = fetch_yahoo_prices(
+        symbol=YAHOO_SYMBOLS["AAPL"],
+        canonical_ticker="AAPL",
+        period="1mo",
+        interval="1d",
+    )
 
     instrument_prices = fetch_yahoo_prices(
         symbol=YAHOO_SYMBOLS[instrument["ticker"]],
