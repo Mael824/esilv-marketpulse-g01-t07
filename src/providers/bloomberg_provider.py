@@ -1,40 +1,65 @@
 import json
 from pathlib import Path
 
+ACCESS_MODE = "APPROVED_SAMPLE"
 
-def fetch_raw_bloomberg_history(
-    identifier,
-    start_date,
-    end_date,
-):
-    path = Path("data/sample/bloomberg_reference_sample.json")
+BLOOMBERG_IDENTIFIERS = {
+    "AAPL": "AAPL US Equity",
+    "SP500": "SPX Index",
+}
 
-    with path.open() as file:
-        data = json.load(file)
+SAMPLE_PATH = (
+    Path(__file__).resolve().parents[2]
+    / "data"
+    / "sample"
+    / "bloomberg_reference_sample.json"
+)
 
-    for series in data["series"]:
+
+def fetch_raw_bloomberg_history(identifier, start_date=None, end_date=None):
+    """Raw input boundary. APPROVED_SAMPLE: read the approved fixture."""
+    with open(SAMPLE_PATH, encoding="utf-8") as file:
+        sample = json.load(file)
+
+    for series in sample["series"]:
         if series["provider_identifier"] == identifier:
-            observations = [
-                row for row in series["observations"]
-                if start_date <= row["observation_date"] <= end_date
-            ]
-            return observations, series["canonical_ticker"]
+            observations = series["observations"]
+            if start_date is not None:
+                observations = [
+                    o for o in observations if o["observation_date"] >= start_date
+                ]
+            if end_date is not None:
+                observations = [
+                    o for o in observations if o["observation_date"] <= end_date
+                ]
+            return observations
 
-    raise ValueError(f"No data found for {identifier}")
+    raise ValueError(f"No approved sample series for {identifier}")
 
 
 def normalize_bloomberg_history(raw_data, canonical_ticker):
+    """Normalization boundary: teaching wrapper keys -> canonical rows."""
     rows = []
+    for observation in raw_data:
+        rows.append(
+            {
+                "date": observation["observation_date"],
+                "ticker": canonical_ticker,
+                "open": float(observation["open_value"]),
+                "high": float(observation["high_value"]),
+                "low": float(observation["low_value"]),
+                "close": float(observation["close_value"]),
+                "volume": int(observation["volume_value"]),
+            }
+        )
+    return rows
 
-    for row in raw_data:
-        rows.append({
-            "date": row["observation_date"],
-            "ticker": canonical_ticker,
-            "open": float(row["open_value"]),
-            "high": float(row["high_value"]),
-            "low": float(row["low_value"]),
-            "close": float(row["close_value"]),
-            "volume": int(row["volume_value"])
-        })
 
+def fetch_bloomberg_prices(canonical_ticker):
+    """Canonical ticker in, canonical rows out."""
+    identifier = BLOOMBERG_IDENTIFIERS[canonical_ticker]
+    raw_data = fetch_raw_bloomberg_history(identifier)
+    rows = normalize_bloomberg_history(raw_data, canonical_ticker)
+    if not rows:
+        raise ValueError(f"No Bloomberg-stage rows for {canonical_ticker}")
     return rows
