@@ -7,6 +7,8 @@ from analytics import (
     calculate_period_return,
     calculate_relative_performance,
 )
+from providers.bloomberg_provider import (fetch_raw_bloomberg_history, normalize_bloomberg_history)
+
 
 from providers.bloomberg_provider import (
     ACCESS_MODE,
@@ -82,8 +84,10 @@ def main():
     print()
 
     print("Market configuration")
-    print(f"Period: {snapshot['lookback']}")
-    print(f"Interval: {snapshot['interval']}")
+    print(f"Instrument : {instrument['ticker']} - {instrument['name']}")
+    print(f"Benchmark  : {benchmark['name']}")
+    print(f"Period     : {snapshot['lookback']}")
+    print(f"Interval   : {snapshot['interval']}")
     print()
 
     print("Instrument")
